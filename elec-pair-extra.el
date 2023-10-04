@@ -1,4 +1,4 @@
-;;; elec-pair-extra.el --- Provide extra rules to manipulate elec-pair behaviors -*- lexical-binding: t -*-
+;;; elec-pair-extra.el --- Apply extra rules to alter elec-pair behaviors -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 liuyinz
 
@@ -28,7 +28,7 @@
 
 ;;; Commentary:
 
-;; Provide extra rules to manipulate elec-pair behaviors.
+;; Apply extra rules to alter elec-pair behaviors.
 
 ;;; Code:
 
@@ -107,8 +107,9 @@ Return non-nil if CHAR should be inhibited."
                            ((functionp (cdr it)) (funcall (cdr it) char)))))))
       (funcall elec-pair-extra-orig char)))
 
-(defun elec-pair-extra-setup-mode ()
-  "Setup elec-pair-extra features for current major-mode."
+;;;###autoload
+(defun elec-pair-extra-ensure-local ()
+  "Ensure elec-pair-extra rules applied in current buffer."
   (unless (get major-mode 'elec-pair-extra-added)
     (mapc #'elec-pair-extra-add-pair (elec-pair-extra-get :pair))
     (put major-mode 'elec-pair-extra-added t))
@@ -117,11 +118,17 @@ Return non-nil if CHAR should be inhibited."
     (setq-local electric-pair-inhibit-predicate #'elec-pair-extra-inhibit)))
 
 ;;;###autoload
-(defun elec-pair-extra-setup ()
-  "Add hooks for major modes defined in `elec-pair-extra-rules'."
+(defun elec-pair-extra-ensure ()
+  "Ensure elec-pair-extra rules applied in major modes defined in rules."
   (dolist (mode (mapcar #'car elec-pair-extra-rules))
     (add-hook (intern (concat (symbol-name mode) "-hook"))
-              #'elec-pair-extra-setup-mode)))
+              #'elec-pair-extra-ensure-local)))
+
+;;;###autoload
+(defun elec-pair-extra-setup ()
+  "Setup elec-pair-extra features whenever `electric-pair-mode' is enable."
+  (add-hook 'electric-pair-mode-hook #'elec-pair-extra-ensure)
+  (add-hook 'electric-pair-local-mode-hook #'elec-pair-extra-ensure-local))
 
 (provide 'elec-pair-extra)
 ;;; elec-pair-extra.el ends here
