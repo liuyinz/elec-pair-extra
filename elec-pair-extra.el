@@ -44,7 +44,7 @@ Each element is in the form of
 \(MODE :pair    ( CHAR/(CHAR . PAIR-CHAR) ...)
        :inhibit ( CHAR/(CHAR . REGEXP/FUNCTION) ...)).
 
-MODE: A major mode, or t for all modes.
+MODE: A major mode.
 CHAR: A character to match the input.  for example: ?\{
 \(CHAR . PAIR-CHAR): A pair of paired character.  for example: (?\{ . ?\})
 \(CHAR . REGEXP): A character to match input, a regex pattern for inhibit
