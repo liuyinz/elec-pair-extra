@@ -67,8 +67,19 @@ CHAR: A character to match the input.  for example: ?\{
 
 (defun elec-pair-extra-get (prop &optional mode)
   "Return value of PROP for MODE in `elec-pair-extra-rules'.
-If optional arg MODE is nil,use `major-mode' instead."
-  (plist-get (cdr (assq (or mode major-mode) elec-pair-extra-rules)) prop))
+MODE is optional argument."
+  (plist-get (cdr (assq (or mode
+                            ;; NOTE if current point is mhtml submode, then
+                            ;; return `mhtml-mode' instead.
+                            (and (get-text-property
+                                  (if (and (eobp) (not (bobp)))
+                                      (1- (point))
+                                    (point))
+                                  'mhtml-submode)
+                                 'mhtml-mode)
+                            major-mode)
+                        elec-pair-extra-rules))
+             prop))
 
 (defun elec-pair-extra-add-pair (pair)
   "Add pair auto completion for PAIR."
