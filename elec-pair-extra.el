@@ -65,6 +65,8 @@ CHAR: A character to match the input.  for example: ?\{
                                               string
                                               function)))))))
 
+(defvar-local elec-pair-extra-orig nil)
+
 (defun elec-pair-extra-get (prop &optional mode)
   "Return value of PROP for MODE in `elec-pair-extra-rules'.
 MODE is optional argument."
@@ -103,19 +105,16 @@ Return non-nil if CHAR should be inhibited."
                     ((and (consp it) (equal char (car it)))
                      (cond ((stringp   (cdr it)) (looking-back (cdr it) 1))
                            ((functionp (cdr it)) (funcall (cdr it) char)))))))
-      (funcall (or (and-let* ((func (get major-mode 'elec-pair-extra-orig))
-                              ((functionp func)))
-                     func)
-                   #'electric-pair-default-inhibit)
-               char)))
+      (funcall elec-pair-extra-orig char)))
 
 (defun elec-pair-extra-setup-mode ()
   "Setup elec-pair-extra features for current major-mode."
   (unless (get major-mode 'elec-pair-extra-added)
     (mapc #'elec-pair-extra-add-pair (elec-pair-extra-get :pair))
     (put major-mode 'elec-pair-extra-added t))
-  (put major-mode 'elec-pair-extra-orig electric-pair-inhibit-predicate)
-  (setq-local electric-pair-inhibit-predicate #'elec-pair-extra-inhibit))
+  (unless elec-pair-extra-orig
+    (setq-local elec-pair-extra-orig electric-pair-inhibit-predicate)
+    (setq-local electric-pair-inhibit-predicate #'elec-pair-extra-inhibit)))
 
 ;;;###autoload
 (defun elec-pair-extra-setup ()
