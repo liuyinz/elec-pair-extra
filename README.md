@@ -1,6 +1,7 @@
 # elec-pair-extra
 
 Apply extra rules to alter elec-pair behaviors.
+Inspired greatly by [twlz0ne](https://github.com/twlz0ne), SEE [discussion](https://emacs-china.org/t/html-electric-pair-mode-js/13904/6)
 
 ## Customization
 

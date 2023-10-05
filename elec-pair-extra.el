@@ -29,6 +29,8 @@
 ;;; Commentary:
 
 ;; Apply extra rules to alter elec-pair behaviors.
+;; Inspired greatly by https://github.com/twlz0ne
+;; SEE https://emacs-china.org/t/html-electric-pair-mode-js/13904/6
 
 ;;; Code:
 
@@ -36,7 +38,6 @@
 (require 'elec-pair)
 
 ;; add rules for major-mode
-;; SEE https://emacs-china.org/t/html-electric-pair-mode-js/13904/6
 (defcustom elec-pair-extra-rules nil
   "A alist of major-mode and related rule.
 Each element is in the form of
